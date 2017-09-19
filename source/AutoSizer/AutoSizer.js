@@ -4,7 +4,7 @@ import type { Size } from "./types";
 
 import React from "react";
 import createDetectElementResize from "../vendor/detectElementResize";
-import debounce from "loadash.debounce";
+import debounce from "lodash.debounce";
 
 /**
  * Decorator component that automatically adjusts the width and height of a single child.
@@ -58,7 +58,7 @@ export default class AutoSizer extends React.PureComponent {
   _detectElementResize: DetectElementResize;
 
   componentDidMount() {
-    const { nonce, debounce: propDebounce } = this.props;
+    const { nonce } = this.props;
     if (this._autoSizer && this._autoSizer.parentNode instanceof HTMLElement) {
       // Delay access of parentNode until mount.
       // This handles edge-cases where the component has already been unmounted before its ref has been set,
@@ -69,24 +69,27 @@ export default class AutoSizer extends React.PureComponent {
       // See issue #41
       this._detectElementResize = createDetectElementResize(nonce);
 
-      const resizeHandler = propDebounce
-        ? debounce(this._onResize, propDebounce)
-        : this._onResize;
-
       this._detectElementResize.addResizeListener(
         this._parentNode,
-        resizeHandler
+        this._resizeHandler()
       );
 
       this._onResize();
     }
   }
 
+  _resizeHandler = () => {
+    const { debounce: propDebounce } = this.props;
+    return propDebounce
+      ? debounce(this._onResize, propDebounce)
+      : this._onResize;
+  };
+
   componentWillUnmount() {
     if (this._detectElementResize && this._parentNode) {
       this._detectElementResize.removeResizeListener(
         this._parentNode,
-        this._onResize
+        this._resizeHandler
       );
     }
   }
