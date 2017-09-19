@@ -4,6 +4,7 @@ import type { Size } from "./types";
 
 import React from "react";
 import createDetectElementResize from "../vendor/detectElementResize";
+import debounce from "loadash.debounce";
 
 /**
  * Decorator component that automatically adjusts the width and height of a single child.
@@ -23,6 +24,9 @@ type Props = {
 
   /** Nonce of the inlined stylesheet for Content Security Policy */
   nonce?: string,
+
+  /** onResize callback debounce */
+  debounce: number,
 
   /** Callback to be invoked on-resize */
   onResize: (params: Size) => void
@@ -54,7 +58,7 @@ export default class AutoSizer extends React.PureComponent {
   _detectElementResize: DetectElementResize;
 
   componentDidMount() {
-    const { nonce } = this.props;
+    const { nonce, debounce: propDebounce } = this.props;
     if (this._autoSizer && this._autoSizer.parentNode instanceof HTMLElement) {
       // Delay access of parentNode until mount.
       // This handles edge-cases where the component has already been unmounted before its ref has been set,
@@ -64,9 +68,14 @@ export default class AutoSizer extends React.PureComponent {
       // Defer requiring resize handler in order to support server-side rendering.
       // See issue #41
       this._detectElementResize = createDetectElementResize(nonce);
+
+      const resizeHandler = propDebounce
+        ? debounce(this._onResize, propDebounce)
+        : this._onResize;
+
       this._detectElementResize.addResizeListener(
         this._parentNode,
-        this._onResize
+        resizeHandler
       );
 
       this._onResize();
