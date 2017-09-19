@@ -81,7 +81,10 @@ export default class AutoSizer extends React.PureComponent {
   _resizeHandler = () => {
     const { debounce: propDebounce } = this.props;
     return propDebounce
-      ? debounce(this._onResize, propDebounce)
+      ? debounce(this._onResize, propDebounce, {
+          leading: true,
+          trailing: true
+        })
       : this._onResize;
   };
 

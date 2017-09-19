@@ -54,7 +54,10 @@ var AutoSizer = function (_React$PureComponent) {
     }, _this._resizeHandler = function () {
       var propDebounce = _this.props.debounce;
 
-      return propDebounce ? (0, _lodash2.default)(_this._onResize, propDebounce) : _this._onResize;
+      return propDebounce ? (0, _lodash2.default)(_this._onResize, propDebounce, {
+        leading: true,
+        trailing: true
+      }) : _this._onResize;
     }, _this._onResize = function () {
       var _this$props = _this.props,
           disableHeight = _this$props.disableHeight,

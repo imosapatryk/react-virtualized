@@ -1433,7 +1433,10 @@
                     width: 0
                 }, _this._resizeHandler = function() {
                     var propDebounce = _this.props.debounce;
-                    return propDebounce ? (0, _lodash2.default)(_this._onResize, propDebounce) : _this._onResize;
+                    return propDebounce ? (0, _lodash2.default)(_this._onResize, propDebounce, {
+                        leading: !0,
+                        trailing: !0
+                    }) : _this._onResize;
                 }, _this._onResize = function() {
                     var _this$props = _this.props, disableHeight = _this$props.disableHeight, disableWidth = _this$props.disableWidth, onResize = _this$props.onResize;
                     if (_this._parentNode) {
