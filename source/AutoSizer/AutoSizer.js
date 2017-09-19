@@ -71,28 +71,20 @@ export default class AutoSizer extends React.PureComponent {
 
       this._detectElementResize.addResizeListener(
         this._parentNode,
-        this._resizeHandler()
+        this._onResize(),
+        this.props.debounce
       );
 
       this._onResize();
     }
   }
 
-  _resizeHandler = () => {
-    const { debounce: propDebounce } = this.props;
-    return propDebounce
-      ? debounce(this._onResize, propDebounce, {
-          leading: true,
-          trailing: true
-        })
-      : this._onResize;
-  };
-
   componentWillUnmount() {
     if (this._detectElementResize && this._parentNode) {
       this._detectElementResize.removeResizeListener(
         this._parentNode,
-        this._resizeHandler
+        this._resizeHandler,
+        this.props.debounce
       );
     }
   }

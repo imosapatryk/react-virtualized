@@ -10,6 +10,8 @@
  * 4) Add nonce for style element.
  **/
 
+ import debounce from "lodash.debounce";
+ 
 export default function createDetectElementResize(nonce) {
   // Check `document` and `window` in case of server-side rendering
   var _window;
@@ -159,8 +161,8 @@ export default function createDetectElementResize(nonce) {
     }
   };
 
-  var addResizeListener = function(element, fn) {
-    if (attachEvent) element.attachEvent("onresize", fn);
+  var addResizeListener = function(element, fn, d) {
+    if (attachEvent) element.attachEvent("onresize", debounce(fn, d));
     else {
       if (!element.__resizeTriggers__) {
         var elementStyle = _window.getComputedStyle(element);
